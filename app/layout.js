@@ -1,5 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
+import SidebarLayout from "@/component/Sidebar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -15,9 +17,11 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased bg-[#FDF6F6]`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+         <Toaster position="top-right" reverseOrder={false} />
+      <body className=" flex gap-4 bg-[#FDF6F6]">
+        <SidebarLayout />
         {children}
       </body>
     </html>

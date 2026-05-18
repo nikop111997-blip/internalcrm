@@ -1,12 +1,20 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { EyeOff, Info, ChartPie, BarChart3, HandFist, EyeIcon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { EyeOff, Info, ChartPie, BarChart3, EyeIcon, Loader2, Check } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
+  const [seePassword, setSeePassword] = useState(false);
+  
+  // Form and API State
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [buttonState, setButtonState] = useState("idle"); // 'idle' | 'loading' | 'success'
+
   // Animation variants for staggering the form elements
-  const [seePassword, setSeePassword] = useState(false)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -32,8 +40,55 @@ export default function LoginPage() {
     },
   };
 
+  // Handle Form Submission
+  const handleLogin = async (e) => {
+  e.preventDefault();
+
+  // Prevent multiple clicks
+  if (buttonState !== "idle") return;
+
+  if (!email || !password) {
+    toast.error("Please fill in both fields.");
+    return;
+  }
+
+  setButtonState("loading");
+
+  try {
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (result?.error) {
+      setButtonState("idle");
+      toast.error(result.error || "Invalid credentials");
+      return;
+    }
+
+    // Success
+    setButtonState("success");
+
+    toast.success("Welcome back!");
+
+    // Redirect manually
+    window.location.href = "/";
+
+  } catch (error) {
+    setButtonState("idle");
+
+    toast.error(
+      error.message || "Something went wrong"
+    );
+  }
+};
+
   return (
-    <div className="flex min-h-screen w-full bg-[#FDF6F6] font-sans">
+    <div className="flex min-h-screen w-full bg-[#FDF6F6]">
+      {/* Toast Notifications Provider */}
+   
+
       {/* Left Column - Login Form */}
       <div className="flex w-full flex-col justify-between p-8 lg:w-1/2 lg:p-16">
         <motion.div
@@ -62,46 +117,50 @@ export default function LoginPage() {
             Please login to access your account.
           </motion.p>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleLogin}>
             {/* Username Input */}
             <motion.div variants={itemVariants} className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-sm font-medium text-gray-800">Username</label>
+                <label className="text-sm font-medium text-gray-800">Email</label>
                 <Info size={14} className="text-gray-400" />
               </div>
               <input
-                type="text"
-                placeholder="Type your username"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Type your email"
                 className="w-full rounded-lg border-none bg-white p-3 text-sm shadow-sm ring-1 ring-gray-200 focus:outline-none focus:ring-2 focus:ring-[#002C54]"
               />
             </motion.div>
 
             {/* Password Input */}
             <motion.div variants={itemVariants} className="space-y-2">
-  <label className="text-sm font-medium text-gray-800">
-    Password
-  </label>
+              <label className="text-sm font-medium text-gray-800">
+                Password
+              </label>
 
-  <div className="relative">
-    <input
-      type={seePassword ? "text" : "password"}
-      placeholder="Type your password"
-      className="w-full rounded-lg border-none bg-white p-3 text-sm shadow-sm ring-1 ring-gray-200 focus:outline-none focus:ring-2 focus:ring-[#002C54]"
-    />
+              <div className="relative">
+                <input
+                  type={seePassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Type your password"
+                  className="w-full rounded-lg border-none bg-white p-3 text-sm shadow-sm ring-1 ring-gray-200 focus:outline-none focus:ring-2 focus:ring-[#002C54]"
+                />
 
-    <button
-      type="button"
-      onClick={() => setSeePassword((prev) => !prev)}
-      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-    >
-      {seePassword ? (
-        <EyeIcon size={18} />
-      ) : (
-        <EyeOff size={18} />
-      )}
-    </button>
-  </div>
-</motion.div>
+                <button
+                  type="button"
+                  onClick={() => setSeePassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {seePassword ? (
+                    <EyeIcon size={18} />
+                  ) : (
+                    <EyeOff size={18} />
+                  )}
+                </button>
+              </div>
+            </motion.div>
 
             {/* Forgot Password */}
             <motion.div variants={itemVariants} className="flex justify-start">
@@ -110,29 +169,67 @@ export default function LoginPage() {
               </a>
             </motion.div>
 
-            {/* Login Button */}
+            {/* Animated Login Button */}
             <motion.button
+              type="submit"
               variants={itemVariants}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full rounded-lg bg-[#002C54] py-3 text-center font-medium text-white transition-colors hover:bg-[#001f3d]"
+              disabled={buttonState !== "idle"}
+              animate={{
+                backgroundColor:
+                  buttonState === "success"
+                    ? "#10B981" // Green for success
+                    : buttonState === "loading"
+                    ? "#4B5563" // Gray for loading
+                    : "#002C54", // Default brand color
+              }}
+              whileHover={buttonState === "idle" ? { scale: 1.02 } : {}}
+              whileTap={buttonState === "idle" ? { scale: 0.98 } : {}}
+              className="relative w-full overflow-hidden rounded-lg py-3 text-center font-medium text-white shadow-md flex items-center justify-center h-[48px]"
             >
-              Log In
+              <AnimatePresence mode="wait">
+                {buttonState === "idle" && (
+                  <motion.span
+                    key="idle"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute"
+                  >
+                    Log In
+                  </motion.span>
+                )}
+                {buttonState === "loading" && (
+                  <motion.div
+                    key="loading"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute flex items-center gap-2"
+                  >
+                    <Loader2 size={18} className="animate-spin" />
+                    <span>Logging in...</span>
+                  </motion.div>
+                )}
+                {buttonState === "success" && (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.5 }}
+                    className="absolute flex items-center gap-2"
+                  >
+                    <Check size={20} className="stroke-[3px]" />
+                    <span>Success!</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.button>
           </form>
-
-          <motion.p variants={itemVariants} className="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{" "}
-            <a href="#" className="font-semibold text-[#002C54] hover:text-[#C5001A] transition-colors">
-              Sign Up
-            </a>
-          </motion.p>
         </motion.div>
 
         {/* Footer */}
         <div className="flex justify-between text-xs text-gray-400">
           <p>Copyright © 2026 Internal CRM</p>
-          <a href="#" className="hover:text-gray-600">Privacy Policy</a>
         </div>
       </div>
 
