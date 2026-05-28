@@ -31,17 +31,16 @@ export default function Sidebar() {
     { type: "divider" },
     { name: "Students", icon: ArrowRightLeft, href: "/students" },
     { name: "Add Students", icon: PlusCircle, href: "/add-student" },
-    { name: "Trainers", icon: Settings, href: "/trainers" },
   ];
 
   return (
     <motion.div
       initial={false}
       animate={{
-        width: isCollapsed ? "80px" : "280px",
+        width: isCollapsed ? "80px" : "320px",
       }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="h-[90vh] flex flex-col justify-between py-6 rounded-2xl mx-4 my-8 shadow-2xl relative"
+      className="h-[100vh] flex flex-col justify-between py-6 shadow-2xl relative"
       style={{ backgroundColor: "#002C54", color: "#FDF6F6" }}
     >
       {/* Top Section: Logo */}
@@ -50,7 +49,7 @@ export default function Sidebar() {
         <div className="flex items-center gap-3 overflow-hidden">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="min-w-[42px] h-[42px] rounded-2xl bg-gradient-to-br from-[#001D3D] to-[#003566] shadow-md flex items-center justify-center"
+            className="min-w-[56px] h-[42px] rounded-2xl bg-gradient-to-br from-[#001D3D] to-[#003566] shadow-md flex items-center justify-center"
           >
             <Zap size={20} className="text-[#FFD60A]" fill="#FFD60A" />
           </motion.div>
