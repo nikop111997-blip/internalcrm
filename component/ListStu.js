@@ -93,12 +93,12 @@ export default function StudentDashboard() {
 
   // --- UI COMPONENTS ---
   const StatCard = ({ title, value, percentage, isPositive }) => (
-    <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-md">
+    <div className="bg-white p-5 rounded-md border border-gray-300 shadow-xs flex flex-col justify-between transition-all hover:shadow-md">
       <h4 className="text-sm font-medium text-gray-500 mb-2">{title}</h4>
       <div className="flex items-end justify-between">
         <span className="text-3xl font-bold text-gray-900">{value}</span>
         {percentage && (
-          <span className={`text-xs font-semibold px-2 py-1 rounded-full ${isPositive ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+          <span className={`text-xs font-semibold px-2 py-1 rounded-md ${isPositive ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
             {isPositive ? '↑' : '↓'} {percentage}%
           </span>
         )}
@@ -222,7 +222,7 @@ const exportCSV = () => {
         </div>
 
         {/* Main Dashboard Panel */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden">
           
           {/* Toolbar */}
           <div className="p-4 border-b border-gray-200 flex flex-col lg:flex-row items-center justify-between gap-4">
@@ -238,12 +238,12 @@ const exportCSV = () => {
                   placeholder="Search students..." 
                   value={search}
                   onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-[#7F56D9] focus:border-[#7F56D9] outline-none transition-shadow"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-sm text-sm focus:ring-[#7F56D9] focus:border-[#7F56D9] outline-none transition-shadow"
                 />
               </div>
 
               {/* Sorting Controls */}
-              <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-2 py-1.5 bg-white">
+              <div className="flex items-center gap-2 border border-gray-300 rounded-sm px-2 py-0.5 bg-white">
                 <select 
                   value={sortBy} 
                   onChange={(e) => setSortBy(e.target.value)}
@@ -265,7 +265,7 @@ const exportCSV = () => {
               {/* Filter Toggle */}
               <button 
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${showFilters ? 'bg-[#7F56D9]/10 border-[#7F56D9]/30 text-[#7F56D9]' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+                className={`flex items-center gap-2 px-4 py-2 border rounded-sm text-sm font-medium transition-colors ${showFilters ? 'bg-[#7F56D9]/10 border-[#7F56D9]/30 text-[#7F56D9]' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                 Filters {Object.values(filters).some(x => x !== "") && <span className="w-2 h-2 rounded-full bg-[#7F56D9]"></span>}
@@ -273,10 +273,10 @@ const exportCSV = () => {
             </div>
             
             <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
-              <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+              <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                 Export CSV
               </button>
-              <Link href={'/add-students'} title="add students" className="flex items-center gap-2 px-4 py-2 bg-[#000] text-white rounded-lg text-sm font-medium hover:bg-[#6941C6] transition-colors shadow-sm">
+              <Link href={'/add-student'} title="add students" className="flex items-center gap-2 px-4 py-2 bg-[#000] text-white rounded-sm text-sm font-medium hover:bg-[#6941C6] transition-colors shadow-sm">
                 + Add Student
               </Link>
             </div>

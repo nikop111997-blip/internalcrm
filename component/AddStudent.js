@@ -1,9 +1,45 @@
 "use client";
 
 import BackButton from "@/lib/BackButton";
+import { certificationOptions } from "@/lib/certification";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+const courseOptions = [
+  // Digital Marketing
+  "360° Digital Marketing Professional Program",
 
+  // DevOps
+  "Certified AWS DevOps Course",
+  "Certified DevOps Engineer Course",
+  "Master Azure DevOps",
+
+  // Docker & Kubernetes
+  "Docker Containers Training Course",
+  "Certified Kubernetes Administrator (CKA)",
+  "Certified Kubernetes Security Specialist (CKS)",
+
+  // Cloud Computing
+  "AZ-204: Azure Developer Associate",
+  "AZ-305: Azure Infrastructure Solutions",
+  "Certified Terraform Associate Course",
+
+  // Red Hat
+  "Red Hat Learning Subscription (RHLS)",
+  "EX188: Red Hat Certified Specialist in Containers",
+  "EX267: Red Hat Certified OpenShift AI",
+  "EX280: Red Hat Certified OpenShift Administration",
+  "EX294: Red Hat Certified Engineer (RHCE)",
+  "EX316: Red Hat Certified OpenShift Virtualization",
+  "EX342: Red Hat Certified Linux Diagnostics and Troubleshooting",
+  "EX374: Developing Automation with Ansible Automation Platform",
+  "EX415: Red Hat Certified Security Linux",
+  "EX467: Red Hat Managing Automation with Ansible Automation Platform",
+  "EX480: Red Hat Certified Multicluster Management",
+  "EX380: Red Hat Certified OpenShift Administration III",
+
+  // Custom
+  "Other"
+];
 // --- CONSTANTS FOR DROPDOWNS ---
 const TOP_STREAMS = [
   "B.Tech / B.E. (Engineering)", "M.Tech / M.E.", "BCA (Computer Applications)", "MCA",
@@ -336,9 +372,7 @@ const handleSubmit = async (e) => {
                   </div>
                   <div>
                     <label className={labelClass}>Course (Enrolled In)</label>
-                    <input
-  type="text"
-  placeholder="Course Name"
+                   <select
   value={formData.course}
   onChange={(e) =>
     setFormData({
@@ -347,7 +381,48 @@ const handleSubmit = async (e) => {
     })
   }
   className={inputClass}
-/>
+>
+  <option value="">Select Course</option>
+
+  <optgroup label="Digital Marketing">
+    <option>360° Digital Marketing Professional Program</option>
+  </optgroup>
+
+  <optgroup label="DevOps">
+    <option>Certified AWS DevOps Course</option>
+    <option>Certified DevOps Engineer Course</option>
+    <option>Master Azure DevOps</option>
+  </optgroup>
+
+  <optgroup label="Docker & Kubernetes">
+    <option>Docker Containers Training Course</option>
+    <option>Certified Kubernetes Administrator (CKA)</option>
+    <option>Certified Kubernetes Security Specialist (CKS)</option>
+  </optgroup>
+
+  <optgroup label="Cloud Computing">
+    <option>AZ-204: Azure Developer Associate</option>
+    <option>AZ-305: Azure Infrastructure Solutions</option>
+    <option>Certified Terraform Associate Course</option>
+  </optgroup>
+
+  <optgroup label="Red Hat Certifications">
+    <option>Red Hat Learning Subscription (RHLS)</option>
+    <option>EX188: Red Hat Certified Specialist in Containers</option>
+    <option>EX267: Red Hat Certified OpenShift AI</option>
+    <option>EX280: Red Hat Certified OpenShift Administration</option>
+    <option>EX294: Red Hat Certified Engineer (RHCE)</option>
+    <option>EX316: Red Hat Certified OpenShift Virtualization</option>
+    <option>EX342: Red Hat Certified Linux Diagnostics and Troubleshooting</option>
+    <option>EX374: Developing Automation with Ansible Automation Platform</option>
+    <option>EX415: Red Hat Certified Security Linux</option>
+    <option>EX467: Red Hat Managing Automation with Ansible Automation Platform</option>
+    <option>EX480: Red Hat Certified Multicluster Management</option>
+    <option>EX380: Red Hat Certified OpenShift Administration III</option>
+  </optgroup>
+
+  <option value="Other">Other</option>
+</select>
                   </div>
                 </div>
               </div>
@@ -402,13 +477,49 @@ const handleSubmit = async (e) => {
                     {certificateList.map((cert, index) => (
                       <div key={index} className="mb-2">
                         <div className="flex gap-2 items-center">
-                          <input
-                            type="text"
-                            placeholder="Certificate Name (e.g. AWS Certified)"
-                            value={cert.name}
-                            onChange={(e) => handleCertificateChange(index, e.target.value)}
-                            className={inputClass}
-                          />
+                         <select
+  value={cert.name}
+  onChange={(e) => handleCertificateChange(index, e.target.value)}
+  className={inputClass}
+>
+  <option value="">Select Certification</option>
+
+  <optgroup label="AWS">
+    {certificationOptions
+      .filter(cert => cert.startsWith("AWS"))
+      .map(cert => (
+        <option key={cert} value={cert}>
+          {cert}
+        </option>
+      ))}
+  </optgroup>
+
+  <optgroup label="Microsoft Azure">
+    {certificationOptions
+      .filter(cert => cert.includes("Azure"))
+      .map(cert => (
+        <option key={cert} value={cert}>
+          {cert}
+        </option>
+      ))}
+  </optgroup>
+
+  <optgroup label="Google Cloud">
+    {certificationOptions
+      .filter(cert => cert.includes("Cloud") && cert.includes("Professional"))
+      .map(cert => (
+        <option key={cert} value={cert}>
+          {cert}
+        </option>
+      ))}
+  </optgroup>
+
+  {certificationOptions.map((cert) => (
+    <option key={cert} value={cert}>
+      {cert}
+    </option>
+  ))}
+</select>
                           {certificateList.length > 1 && (
                             <button type="button" onClick={() => handleRemoveCertificate(index)} className="text-xs font-medium text-red-500 hover:text-red-700 whitespace-nowrap">
                               Drop
